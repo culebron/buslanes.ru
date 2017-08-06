@@ -37,9 +37,9 @@ def write_file(df, fname):
 		df.to_file(fname, driver='GeoJSON', encoding='utf-8')
 	elif isinstance(df, pd.DataFrame):
 		if fname.endswith('.csv'):
-			df.to_csv(fname)
+			df.to_csv(fname, encoding='utf-8')
 		elif fname.endswith('.json'):
-			df.to_json(fname)
+			df.to_json(fname, encoding='utf-8')
 
 
 @decorator
