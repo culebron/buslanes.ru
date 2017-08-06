@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  lanes-calculator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - ./calculator:/calculator
+
+    command: sh /make-rating.sh
