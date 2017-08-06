@@ -24,5 +24,4 @@ def main(muni_df: gpd.GeoDataFrame, pop_df: pd.DataFrame, outfile):
 			return matching['population'].values[0]
 
 	muni_df['population'] = muni_df['short_name'].apply(find_pop)
-	muni_df = muni_df[~muni_df['short_name'].isnull()]
-	return muni_df
+	return muni_df[~muni_df['short_name'].isnull()]
