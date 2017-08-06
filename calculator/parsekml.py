@@ -13,13 +13,15 @@ def main(kmlfile, outfile):
 
 	data = []
 	for f in list(k.features())[0].features():
+		lanes = None
 		if f.name == 'односторонние сущ.':
-			for f2 in f.features():
-				data.append({'lanes': 1, 'geometry': f2.geometry})
+			lanes = 1
+		elif f.name == 'двусторонние сущ.':
+			lanes = 2
 
-		if f.name == 'двусторонние сущ.':
+		if lanes:
 			for f2 in f.features():
-				data.append({'lanes': 2, 'geometry': f2.geometry})
+				data.append({'lanes': lanes, 'geometry': f2.geometry})
 
 	return gpd.GeoDataFrame(data)
 
