@@ -22,8 +22,8 @@ data/matched-cities.geojson: match-cities.py data/muni3857.geojson src/city-popu
 data/merged.geojson: intersect.py data/matched-cities.geojson data/lanes3.geojson
 	python3 $^ --how left $@
 
-data/stats.geojson: stats.py data/merged.geojson
+results/stats.geojson: stats.py data/merged.geojson
 	python3 $^ $@
 
-results/rating.csv: strip_geometry.py data/stats.geojson
+results/rating.csv: strip_geometry.py results/stats.geojson
 	python3 $^ $@

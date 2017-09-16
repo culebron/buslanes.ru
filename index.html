@@ -1,0 +1,41 @@
+<html>
+<head>
+	<meta charset=utf-8 />
+	<title>Карта выделенных полос в России</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+	<script type='text/javascript' src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
+	<!-- <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' /> -->
+
+	<style>
+		body { margin:0; padding:0; }
+		#map { position:absolute; top:0; bottom:0; left: 0; right: 0; }
+	</style>
+</head>
+<body>
+
+	<div id='map'></div>
+	<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiY3VsZWJyb24iLCJhIjoibUV6aHVrZyJ9.dCsAtXACyFtU1nKeM5zZUA';
+	var map = new mapboxgl.Map({
+		container: 'map',
+		style: 'mapbox://styles/mapbox/streets-v10',
+		zoom: 12,
+		center: [83, 55]
+	});
+
+	map.on('load', function() {
+		map.addLayer({
+			id: 'bus-lanes',
+			type: 'line',
+			source: {
+				type: 'vector',
+				url: 'calculator/data/lanes.geojson'
+			},
+			'source-layer': 'test'
+		});
+	});
+	</script>
+
+</body>
+</html>

@@ -12,6 +12,8 @@ def main(df: gpd.GeoDataFrame, outfile):
 
 	f = popgeom.reset_index()
 	f.fillna(0)
-	f['lanes_per_1K'] = f['lanes'] / f['population'] * 1000
+	f = f[f.lanes > 0]
+	f['lanes_per_1K'] = f.lanes / f.population * 1000
 	f.sort_values('lanes_per_1K', ascending=False, inplace=True)
-	return gpd.GeoDataFrame(f)
+	f = gpd.GeoDataFrame(f, crs=df.crs).to_crs(geolib.crs_dict[4326])
+	return f.join(f.bounds)
