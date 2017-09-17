@@ -616,7 +616,7 @@
 									<tr>
 										<td class='r'>{{ loop.index }}</td>
 										<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city'>{{ city.short_name }}</a></td>
-										<td class='r xs-hide'>{{ (city.length/1000)|round(1) }}</td>
+										<td class='r xs-hide'>{{ (city.lanes_length/1000)|round(1) }}</td>
 										<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
 										<td class='r'>{{ city.lanes_per_1K|round(1) }}</td>
 									</tr>
@@ -648,7 +648,7 @@
 					<tr class='xs-show'>
 						<td></td>
 						<td colspan='2' class='padding5-b font-smaller'>
-							{{ (city.length/1000)|round(1) }} км,
+							{{ (city.lanes_length/1000)|round(1) }} км,
 							{{ (city.population/1000)|round(0)|int }} тыс.чел.
 						</td>
 					</tr>
