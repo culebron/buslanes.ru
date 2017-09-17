@@ -584,10 +584,11 @@
 			}
 			#desktop-table > div {
 				background: #fff;
-				padding: .5em;
 			}
 
 			#desktop-table table { margin-top: 1em; }
+			#desktop-table td:last-child { padding-right: .7em; }
+			#desktop-table td:first-child { padding-left: .7em; }
 			#desktop-table table thead { background: #ddd; }
 			table tr:nth-child(even) { background: #eee; }
 		}
@@ -597,8 +598,10 @@
 <body>
 				<div id='desktop-table' class='xs-hide'>
 					<div>
-						<h1>Рейтинг выделенных полос России</h1>
-						{% include 'authors.html' %}
+						<div class='padding5'>
+							<h1>Рейтинг выделенных полос России</h1>
+							{% include 'authors.html' %}
+						</div>
 						<table class='sortable'>
 							<thead>
 								<tr>
