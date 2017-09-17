@@ -3,7 +3,6 @@
 	<meta charset=utf-8 />
 	<title>Карта выделенных полос в России</title>
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-
 	<script type='text/javascript' src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
 	<!-- <script type='text/javascript' src='data.js'></script> -->
 	<!-- <script type='text/javascript' src='sorttable.js'></script> -->
@@ -500,12 +499,13 @@
 		</script>
 
 	<style>
-		body { margin:0; padding:0; font-family: 'Trebuchet MS' }
-		#map { position:fixed; top:0; bottom: 10%; left: 0; right: 0; }
+		body {
+			margin:0; padding:0;
+			font-family: 'PT Sans', sans-serif; }
 		.r { text-align: right; }
 		td.font-x-large { font-size: x-large; }
 		#mobile-table { display: none; }
-		#desktop-table { display: block; }
+		/* #desktop-table { display: block; } */
 		/*
 		Max width before this PARTICULAR table gets nasty
 		This query will take effect for any screen smaller than 760px
@@ -516,9 +516,18 @@
 		.margin5 { padding: .5em; }
 		.expand { width: 100%; box-sizing: margin; }
 
+		table {
+			border-spacing: 0;
+			border-collapse: collapse;
+		}
+		table td {
+			padding: .3em;
+		}
+
 		/* td { border: 1px solid black; } */
 		@media only screen and (max-width: 760px),
 		(min-device-width: 768px) and (max-device-width: 1024px)  {
+			#map { position:fixed; top:0; bottom: 20%; left: 0; right: 0; }
 			body { font-size: 110%; }
 			table { font-size: large; }
 			.font-smaller { font-size: smaller; }
@@ -528,7 +537,7 @@
 
 			#mobile-table #table-header {
 				padding: .5em;
-				background: #ffffff;
+				background: #ddd;
 				width: 100%;
 				box-sizing: border-box;
 			}
@@ -536,12 +545,12 @@
 				display: block;
 				position: absolute;
 				z-index: 100;
-				top: 90%;
-				bottom: -80%;
+				top: 80%;
+				bottom: -70%;
 				left: 0;
 				right: 0;
 				/*padding: 5% 10%;*/
-				background: #dddddd;
+				background: #fff;
 			}
 			#mobile-table > div {
 				padding-right: 1em;
@@ -554,14 +563,59 @@
 				z-index: 100;
 				/*background: #fff;*/
 			}
+		}
 
+		@media screen and (min-device-width: 1025px) {
+			#map { overflow: hidden; height: 100%; }
+			#desktop-table {
+				float: left;
+				height: 100%;
+				overflow-y: scroll;
+			}
+			#desktop-table > div {
+				background: #fff;
+				padding: .5em;
+			}
 
+			table tr:nth-child(even) { background: #eee; }
+			#desktop-table table { margin-top: 1em; }
+			#desktop-table table thead { background: #ddd; }
 		}
 	</style>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 </head>
 <body>
-	<div id='map'></div>
-	<div id='mobile-table'>
+				<div id='desktop-table' class='xs-hide'>
+					<div>
+						{% include 'authors.html' %}
+						<table class='sortable'>
+							<thead>
+								<tr>
+									<td>№</td>
+									<td>город</td>
+									<td class='xs-hide'>длина в.п.<br> (км)</td>
+									<td class='xs-hide'>жители<br> (тыс.)</td>
+									<td class='r'>в.п.<br> (м. / 1000 чел.)</td>
+								</tr>
+							</thead>
+							<tbody>
+								{% for city in cities %}
+									<tr>
+										<td>{{ loop.index }}</td>
+										<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city'>{{ city.short_name }}</a></td>
+										<td class='r xs-hide'>{{ (city.length/1000)|round(1) }}</td>
+										<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
+										<td class='r'>{{ city.lanes_per_1K|round(1) }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div id='map'></div>
+
+	<div id='mobile-table' class='xs-show'>
 		<table id='table-header'>
 			<tr>
 				<td class='font-x-large'>&equiv;</td>
@@ -586,50 +640,17 @@
 					</tr>
 				{% endfor %}
 			</table>
-			Рейтинг выделенных полос России.<br>
-			Авторы <a href='https://monteklever.livejournal.com'>Александр Егоров</a>, <a href='http://facebook.com/planiformica/'>Дмитрий Лебедев</a>.
+			{% include 'authors.html' %}
 		</div>
 	</div>
-	<div id='desktop-table' class='xs-hide'>
-		<div>
-			<table class='sortable'>
-				<thead>
-					<tr>
-						<td>место</td>
-						<td>город</td>
-						<td class='xs-hide'>длина в.п. (км)</td>
-						<td class='xs-hide'>жители (тыс.)</td>
-						<td class='r'>в.п. (м. / 1000 чел.)</td>
-					</tr>
-				</thead>
-				<tbody>
-					{% for city in cities %}
-						<tr>
-							<td>{{ loop.index }}</td>
-							<td><a href='#{{ city.id }}'>{{ city.short_name }}</a></td>
-							<td class='r xs-hide'>{{ (city.length/1000)|round(1) }}</td>
-							<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
-							<td class='r'>{{ city.lanes_per_1K|round(1) }}</td>
-						</tr>
-						<tr class='xs-show'>
-							<td></td>
-							<td colspan='2'>
-								{{ (city.length/1000)|round(1) }} км,
-								{{ (city.population/1000)|round(0)|int }} тыс.чел.
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
+
 	<script>
 	mapboxgl.accessToken = 'pk.eyJ1IjoiY3VsZWJyb24iLCJhIjoibUV6aHVrZyJ9.dCsAtXACyFtU1nKeM5zZUA';
 	var map = new mapboxgl.Map({
 		container: 'map',
 		style: 'mapbox://styles/mapbox/streets-v10',
 		zoom: 12,
-		center: [83, 55]
+		center: [49.1245, 55.7836]
 	});
 
 	map.on('load', function() {
@@ -641,7 +662,7 @@
 				data: {{ cities_json|safe }}
 			},
 			paint: {
-				'line-color': 'rgba(250,40,250,.75)',
+				'line-color': 'rgb(227,98,227)',
 				'line-width': 6
 			}
 		}, 'waterway-label');
@@ -649,11 +670,9 @@
 
 	var elts = document.getElementsByClassName('js-go-to-city');
 	Array.prototype.forEach.call(elts, function(e) {
-		console.log(e);
 		var extent = JSON.parse(e.getAttribute('data-extent'));
 		e.addEventListener('click', function() {
-			console.log('!!!')
-			map.fitBounds(extent);
+			map.fitBounds(extent, {padding: 20});
 			return false;
 		});
 	});
