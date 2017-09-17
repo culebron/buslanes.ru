@@ -21,6 +21,7 @@ RUN ldconfig && pip3 install -U \
 	fastkml \
 	geojson \
 	geopandas \
+	Jinja2 \
 	lxml \
 	polyline \
 	rtree \

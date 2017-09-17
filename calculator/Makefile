@@ -34,4 +34,9 @@ results/stats.geojson: stats.py data/grouped-lanes.geojson
 results/rating.csv: strip_geometry.py results/stats.geojson
 	python3 $^ $@
 
-all: results/rating.csv data/grouped-lanes.geojson
+html/index.html: render.py html/index.template.html results/stats.geojson
+	python3 $^ $@
+
+
+all: results/rating.csv data/grouped-lanes.geojson html/index.html
+
