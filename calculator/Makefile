@@ -2,7 +2,7 @@ data/lanes.kmz:
 	wget https://www.google.com/maps/d/kml?mid=1PWvRWfdKEV4SVs5ONkDgRPLbRiQ -O $@
 
 data/doc.kml: data/lanes.kmz
-	unzip $^ -d data && touch $@
+	unzip -o $^ -d data && touch $@
 
 data/lanes.geojson: parsekml.py data/doc.kml
 	python3 $^ $@
@@ -22,8 +22,16 @@ data/matched-cities.geojson: match-cities.py data/muni3857.geojson src/city-popu
 data/merged.geojson: intersect.py data/matched-cities.geojson data/lanes3.geojson
 	python3 $^ --how left $@
 
-results/stats.geojson: stats.py data/merged.geojson
+data/merged-lanes.geojson: intersect.py data/lanes3.geojson data/matched-cities.geojson
+	python3 $^ $@
+
+data/grouped-lanes.geojson: dissolve.py data/merged-lanes.geojson
+	python3 $^ 'index_right' 'first:population;first:short_name;sum:length' $@
+
+results/stats.geojson: stats.py data/grouped-lanes.geojson
 	python3 $^ $@
 
 results/rating.csv: strip_geometry.py results/stats.geojson
 	python3 $^ $@
+
+all: results/rating.csv data/grouped-lanes.geojson

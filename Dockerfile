@@ -28,4 +28,4 @@ RUN ldconfig && pip3 install -U \
 
 RUN mkdir /calculator
 COPY calculator /calculator
-RUN echo "cd calculator && make results/rating.csv" > /make-rating.sh
+RUN echo "cd calculator && make all" > /make-rating.sh
