@@ -496,7 +496,11 @@
 		</script>
 
 	<style>
-		h1 { font-size: 150%; color: #000; font-family: 'PT Sans', sans-serif; font-weight: normal; }
+		h1, h2 { font-family: 'PT Sans', sans-serif; font-weight: bold; color: #000; }
+		h1 { font-size: 150%; margin: .5em 0 0; }
+		h2.sub { font-size: 100%; font-weight: normal; }
+		h2 { font-size: 125%; margin: .5em 0 0; }
+
 		a { color: hsl(196, 80%, 28%); }
 		a:visited { color: hsl(296, 80%, 28%) }
 		a:hover, a:active { color: hsl(196, 80%, 58%); }
@@ -552,15 +556,11 @@
 				bottom: -40%;
 				left: 0;
 				right: 0;
-				/* padding: 1% 0%; */
+				box-shadow: 0 10px 10px 10px rgba(0,0,0,.3);
 				background: #fff;
 			}
-			#mobile-table h1 {
-				font-size: 120%;
-				margin-left: .5em;
-				margin-right: .5em;
-			}
-			#mobile-table > div {
+			#mobile-table h1 { font-size: 120%; }
+			#mobile-table > .scroll-container {
 				overflow-y: scroll;
 				z-index: 100;
 				height: 100%;
@@ -570,6 +570,7 @@
 			#mobile-table td:last-child {
 				padding-right: 1em;
 			}
+			.scroll-container { box-shadow: inset 0px 12px 6px -10px rgba(0,0,0,.3); }
 		}
 
 		@media screen and (min-device-width: 1025px) {
@@ -578,66 +579,80 @@
 				float: left;
 				height: 100%;
 				overflow-y: scroll;
+				max-width: 500px;
 			}
-			#desktop-table > div {
-				background: #fff;
+			#desktop-table::before {
+				box-shadow: inset 0 12px 6px -10px rgba(0,0,0,.3);
+				content: ".";
+				color: rgba(255,255,255,0);
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
 			}
+			#desktop-table > .scroll-container { background: #fff; }
 
-			#desktop-table table { margin-top: 1em; }
+			#desktop-table table { margin-top: 1em; width: 100%; }
 			#desktop-table td:last-child { padding-right: .7em; }
 			#desktop-table td:first-child { padding-left: .7em; }
 			#desktop-table table thead { background: #ddd; }
 			table tr:nth-child(even) { background: #eee; }
 		}
 
+		#mobile-table::-webkit-scrollbar, #desktop-table::-webkit-scrollbar { width: 8px; background-color: rgba(255,255,255,0); }
+		#mobile-table::-webkit-scrollbar-thumb, #desktop-table::-webkit-scrollbar-thumb { background-color: #999; border-radius: 4px; }
 		table.sortable thead td { cursor: pointer; }
 	</style>
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 </head>
 <body>
-				<div id='desktop-table' class='xs-hide'>
-					<div>
-						<div class='padding5'>
-							<h1>Рейтинг выделенных полос России</h1>
-							{% include 'authors.html' %}
-						</div>
-						<table class='sortable'>
-							<thead>
-								<tr>
-									<td class='r'>№</td>
-									<td>город</td>
-									<td class='r xs-hide'>длина в.п.<br> (км)</td>
-									<td class='r xs-hide'>жители<br> (тыс.)</td>
-									<td class='r'>в.п.<br> (м. / 1000 чел.)</td>
-								</tr>
-							</thead>
-							<tbody>
-								{% for city in cities %}
-									<tr>
-										<td class='r'>{{ loop.index }}</td>
-										<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city'>{{ city.short_name }}</a></td>
-										<td class='r xs-hide'>{{ (city.lanes_length/1000)|round(1) }}</td>
-										<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
-										<td class='r'>{{ city.lanes_per_1K|round(1) }}</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
+	<div id='desktop-table' class='xs-hide'>
+		<div class='scroll-container'>
+			<div class='padding5'>
+				{% include 'heading.html' %}
+			</div>
+			<table class='sortable'>
+				<thead>
+					<tr>
+						<td class='r'>№</td>
+						<td>город</td>
+						<td class='r xs-hide'>длина ВП<br> (км)</td>
+						<td class='r xs-hide'>жители<br> (тыс.)</td>
+						<td class='r'>ВП<br> (м/1000 чел.)</td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for city in cities %}
+						<tr>
+							<td class='r'>{{ loop.index }}</td>
+							<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city'>{{ city.short_name }}</a></td>
+							<td class='r xs-hide'>{{ (city.lanes_length/1000)|round(1) }}</td>
+							<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
+							<td class='r'>{{ city.lanes_per_1K|round(1) }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class='padding5'>
+				{% include 'info.html' %}
+			</div>
+		</div>
+	</div>
 
-				<div id='map'></div>
+	<div id='map'></div>
 
 	<div id='mobile-table' class='xs-show'>
-		<h1>Рейтинг выделенных полос России</h1>
+		<div class='padding5'>
+			{% include 'heading.html' %}
+		</div>
 		<table id='table-header'>
 			<tr>
 				<td class='r font-x-large'>&equiv;</td>
 				<td>город</td>
-				<td class='r'>в.п. (м. / 1000 чел.)</td>
+				<td class='r'>ВП (м/1000 чел.)</td>
 			</tr>
 		</table>
-		<div>
+		<div class='scroll-container'>
 			<table class='expand'>
 				{% for city in cities %}
 					<tr>
@@ -655,16 +670,18 @@
 				{% endfor %}
 			</table>
 			<div class='padding5'>
-				{% include 'authors.html' %}
+				{% include 'info.html' %}
 			</div>
 		</div>
 	</div>
 
 	<script>
+	{# mapboxgl.accessToken = 'pk.eyJ1IjoiY3VsZWJyb24iLCJhIjoibUV6aHVrZyJ9.dCsAtXACyFtU1nKeM5zZUA'; #}
 	mapboxgl.accessToken = 'pk.eyJ1IjoiY3VsZWJyb24iLCJhIjoibUV6aHVrZyJ9.dCsAtXACyFtU1nKeM5zZUA';
 	var map = new mapboxgl.Map({
 		container: 'map',
-		style: 'mapbox://styles/mapbox/streets-v10',
+		{# style: 'mapbox://styles/mapbox/streets-v10', #}
+		style: 'mapbox://styles/culebron/cj7ornxjab8oq2spdw84gxob0',
 		zoom: 12,
 		center: [49.1245, 55.7836]
 	});
@@ -677,8 +694,12 @@
 				type: 'geojson',
 				data: {{ cities_json|safe }}
 			},
+			layout: {
+				'line-cap': 'round',
+				'line-join': 'round'
+			},
 			paint: {
-				'line-color': 'rgb(227,98,227)',
+				'line-color': 'hsl(188, 93%, 22%)',
 				'line-width': 6
 			}
 		}, 'waterway-label');
