@@ -499,9 +499,12 @@
 		</script>
 
 	<style>
-		a, a.js-go-to-city:visited { color: hsl(196, 80%, 28%) }
+		h1 { font-size: 150%; color: #000; font-family: 'PT Sans', sans-serif; font-weight: normal; }
+		a { color: hsl(196, 80%, 28%); }
 		a:visited { color: hsl(296, 80%, 28%) }
 		a:hover, a:active { color: hsl(196, 80%, 58%); }
+
+		a.js-go-to-city, a.js-go-to-city:visited { color: #000; text-decoration: none; border-bottom: 1px dashed #aaa; }
 		body {
 			margin:0; padding:0;
 			font-family: 'PT Sans', sans-serif; }
@@ -516,7 +519,7 @@
 		*/
 		.xs-show { display: none; }
 		.padding5-b { padding-bottom: .5em; }
-		.margin5 { padding: .5em; }
+		.padding5 { padding: .5em; }
 		.expand { width: 100%; box-sizing: margin; }
 
 		table {
@@ -548,23 +551,27 @@
 				display: block;
 				position: absolute;
 				z-index: 100;
-				top: 80%;
-				bottom: -70%;
+				top: 70%;
+				bottom: -40%;
 				left: 0;
 				right: 0;
-				/*padding: 5% 10%;*/
+				/* padding: 1% 0%; */
 				background: #fff;
 			}
+			#mobile-table h1 {
+				font-size: 120%;
+				margin-left: .5em;
+				margin-right: .5em;
+			}
 			#mobile-table > div {
-				padding-right: 1em;
-				position: absolute;
-				top: 2.9em;
-				bottom: 3%;
-				left:  2%;
-				right: 2%;
 				overflow-y: scroll;
 				z-index: 100;
-				/*background: #fff;*/
+				height: 100%;
+				background: #fff;
+			}
+			table tr:nth-child(4n), table tr:nth-child(4n-1) { background: #eee; }
+			#mobile-table td:last-child {
+				padding-right: 1em;
 			}
 		}
 
@@ -580,9 +587,9 @@
 				padding: .5em;
 			}
 
-			table tr:nth-child(even) { background: #eee; }
 			#desktop-table table { margin-top: 1em; }
 			#desktop-table table thead { background: #ddd; }
+			table tr:nth-child(even) { background: #eee; }
 		}
 	</style>
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
@@ -590,21 +597,22 @@
 <body>
 				<div id='desktop-table' class='xs-hide'>
 					<div>
+						<h1>Рейтинг выделенных полос России</h1>
 						{% include 'authors.html' %}
 						<table class='sortable'>
 							<thead>
 								<tr>
-									<td>№</td>
+									<td class='r'>№</td>
 									<td>город</td>
-									<td class='xs-hide'>длина в.п.<br> (км)</td>
-									<td class='xs-hide'>жители<br> (тыс.)</td>
+									<td class='r xs-hide'>длина в.п.<br> (км)</td>
+									<td class='r xs-hide'>жители<br> (тыс.)</td>
 									<td class='r'>в.п.<br> (м. / 1000 чел.)</td>
 								</tr>
 							</thead>
 							<tbody>
 								{% for city in cities %}
 									<tr>
-										<td>{{ loop.index }}</td>
+										<td class='r'>{{ loop.index }}</td>
 										<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city'>{{ city.short_name }}</a></td>
 										<td class='r xs-hide'>{{ (city.length/1000)|round(1) }}</td>
 										<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
@@ -619,9 +627,10 @@
 				<div id='map'></div>
 
 	<div id='mobile-table' class='xs-show'>
+		<h1>Рейтинг выделенных полос России</h1>
 		<table id='table-header'>
 			<tr>
-				<td class='font-x-large'>&equiv;</td>
+				<td class='r font-x-large'>&equiv;</td>
 				<td>город</td>
 				<td class='r'>в.п. (м. / 1000 чел.)</td>
 			</tr>
@@ -630,7 +639,7 @@
 			<table class='expand'>
 				{% for city in cities %}
 					<tr>
-						<td>{{ loop.index }}</td>
+						<td class='r'>{{ loop.index }}</td>
 						<td class='font-larger'><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]' class='js-go-to-city'>{{ city.short_name }}</a></td>
 						<td class='font-larger r'>{{ city.lanes_per_1K|round(1) }}</td>
 					</tr>
@@ -643,7 +652,9 @@
 					</tr>
 				{% endfor %}
 			</table>
-			{% include 'authors.html' %}
+			<div class='padding5'>
+				{% include 'authors.html' %}
+			</div>
 		</div>
 	</div>
 
