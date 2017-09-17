@@ -2,6 +2,16 @@
 <head>
 	<meta charset=utf-8 />
 	<title>Рейтинг выделенных полос России</title>
+
+	<meta name="description" content="Рейтинг городов России по протяжённости выделенных полос для наземного общественного транспорта.">
+	<link rel="canonical" href="http://buslanes.peshemove.org/">
+
+	<meta property="og:url" content="http://buslanes.peshemove.org/">
+	<meta property="og:title" content="Выделенные полосы в России. Рейтинг городов">
+	<meta property="og:image" content="http://buslanes.peshemove.org/bus-lanes.jpeg">
+	<meta name="apple-mobile-web-app-title" content="Выделенные полосы в России. Рейтинг городов">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<script type='text/javascript' src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
 	<script>
@@ -498,8 +508,8 @@
 	<style>
 		h1, h2 { font-family: 'PT Sans', sans-serif; font-weight: bold; color: #000; }
 		h1 { font-size: 150%; margin: .5em 0 0; }
-		h2.sub { font-size: 100%; font-weight: normal; }
-		h2 { font-size: 125%; margin: .5em 0 0; }
+		h2.sub { font-size: 100%; font-weight: normal; color: #666; margin: 0; }
+		h2 { font-size: 125%; margin: 1.5em 0 .5em; color: #444; font-weight: normal; }
 
 		a { color: hsl(196, 80%, 28%); }
 		a:visited { color: hsl(296, 80%, 28%) }
@@ -601,6 +611,7 @@
 
 		#mobile-table::-webkit-scrollbar, #desktop-table::-webkit-scrollbar { width: 8px; background-color: rgba(255,255,255,0); }
 		#mobile-table::-webkit-scrollbar-thumb, #desktop-table::-webkit-scrollbar-thumb { background-color: #999; border-radius: 4px; }
+		#mobile-table td:first-child, #desktop-table td:first-child { color: #444; }
 		table.sortable thead td { cursor: pointer; }
 	</style>
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
