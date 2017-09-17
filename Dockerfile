@@ -29,4 +29,9 @@ RUN ldconfig && pip3 install -U \
 
 RUN mkdir /calculator
 COPY calculator /calculator
+
+RUN apt-get install -y locales
+RUN locale-gen en_US.UTF-8
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+
 RUN echo "cd calculator && make all" > /make-rating.sh
