@@ -1,11 +1,11 @@
 # coding: utf-8
 
-import geolib
+import aqtash
 import geopandas as gpd
 import pandas as pd
 
-@geolib.autoargs
-def main(muni_df: gpd.GeoDataFrame, pop_df: pd.DataFrame, outfile):
+@aqtash.autoargs
+def do(muni_df: gpd.GeoDataFrame, pop_df: pd.DataFrame, outfile):
 	muni_df = muni_df[~muni_df['name'].str.contains('район')]
 	def _m(n):
 		l = n.lower().split()

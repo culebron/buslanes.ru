@@ -5,7 +5,7 @@ import geolib
 
 
 @geolib.autoargs
-def main(df_left: gpd.GeoDataFrame, df_right: gpd.GeoDataFrame, outfile, columns=None, how='inner'):
+def do(df_left: gpd.GeoDataFrame, df_right: gpd.GeoDataFrame, outfile, columns=None, how='inner'):
 	joined_df = gpd.sjoin(df_left, df_right, how=how, op='intersects')
 	if columns:
 		cnames = [cname.split(':') for cname in columns.split(';')]

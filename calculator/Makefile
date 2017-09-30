@@ -1,25 +1,37 @@
-data/lanes.kmz:
-	wget https://www.google.com/maps/d/kml?mid=1PWvRWfdKEV4SVs5ONkDgRPLbRiQ -O $@
+data/russia.kml:
+	wget "https://www.google.com/maps/d/kml?mid=1PWvRWfdKEV4SVs5ONkDgRPLbRiQ&forcekml=1" -O $@
 
-data/doc.kml: data/lanes.kmz
-	unzip -o $^ -d data && touch $@
+data/moscow.kml:
+	wget "https://www.google.com/maps/d/kml?mid=1GO7k2n2_8FgvzaaZCKtRhVCPr5s&forcekml=1" -O $@
 
-data/lanes.geojson: parsekml.py data/doc.kml
+data/lanes-rus.geojson: parsekml.py data/russia.kml
 	python3 $^ $@
 
-data/lanes2.geojson: convert_crs.py data/lanes.geojson
+data/lanes-rus3857.geojson: convert_crs.py data/lanes.geojson
 	python3 $^ 4326 $@ 3857
 
-data/lanes3.geojson: length.py data/lanes2.geojson
+data/lanes-rus-len.geojson: length.py data/lanes-rus3857.geojson
 	python3 $^ $@ -f 'lanes_length'
 
-data/muni3857.geojson: convert_crs.py src/muni.geojson
-	python3 $^ 4326 $@ 3857
+data/lanes-rus-len4326.geojson: convert_crs.py data/lanes-rus-len.geojson
 
-data/matched-cities.geojson: match-cities.py data/muni3857.geojson src/city-population.csv
+
+data/lanes-rus.geojson: parsekml.py data/russia.kml
 	python3 $^ $@
 
-data/merged-lanes.geojson: intersect.py data/lanes3.geojson data/matched-cities.geojson
+data/lanes-rus3857.geojson: convert_crs.py data/lanes.geojson
+	python3 $^ 4326 $@ 3857
+
+data/lanes-rus-len.geojson: length.py data/lanes-rus3857.geojson
+	python3 $^ $@ -f 'lanes_length'
+
+data/lanes-rus-len4326.geojson: convert_crs.py data/lanes-rus-len.geojson
+
+
+data/matched-cities.geojson: match-cities.py src/muni.geojson src/city-population.csv
+	python3 $^ $@
+
+data/merged-lanes-rus.geojson: intersect.py data/lanes-rus-len4326.geojson data/matched-cities.geojson
 	python3 $^ $@
 
 data/grouped-lanes.geojson: dissolve.py data/merged-lanes.geojson

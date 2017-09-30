@@ -27,8 +27,9 @@ RUN ldconfig && pip3 install -U \
 	rtree \
 	shapely
 
-RUN mkdir /calculator
+RUN mkdir /calculator /aqtash
 COPY calculator /calculator
+COPY aqtash /aqtash
 
 RUN apt-get install -y locales
 RUN locale-gen en_US.UTF-8

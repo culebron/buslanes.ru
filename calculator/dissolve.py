@@ -1,18 +1,18 @@
 #!/usr/bin/python3
 
-import pandas as pd
-import numpy as np
-import geolib
+from aqtash import autoargs
+from argh import CommandError
+from collections import defaultdict
 from shapely.geometry import Point
 import geopandas as gpd
-from collections import defaultdict
-from argh import CommandError
+import numpy as np
+import pandas as pd
 
 
 ALLOWED_OPERATIONS = {'sum', 'avg', 'min', 'first', 'last', 'count'}
 
-@geolib.autoargs
-def dissolve(in_df: gpd.GeoDataFrame, groupby, aggregations, outfile, subset=None):
+@autoargs
+def do(in_df: gpd.GeoDataFrame, groupby, aggregations, outfile):
 	"""
 	Aggregates columns of df2 that join df1.
 	"""
@@ -30,4 +30,4 @@ def dissolve(in_df: gpd.GeoDataFrame, groupby, aggregations, outfile, subset=Non
 
 	result_df = in_df.dissolve(by=groupby, aggfunc=operations)
 	result_df.crs = in_df.crs
-	return geolib.df_subset(result_df, subset)
+	return result_df
