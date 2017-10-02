@@ -6,11 +6,14 @@ import pandas as pd
 
 @aqtash.autoargs
 def do(muni_df: gpd.GeoDataFrame, pop_df: pd.DataFrame, outfile):
-	muni_df = muni_df[~muni_df['name'].str.contains('район')]
+	muni_df = muni_df[~muni_df['name'].str.contains('район').fillna(False)]
 	def _m(n):
+		if n is None:
+			return
+
 		l = n.lower().split()
 		if not l or len(l) == 0:
-			return None
+			return
 
 		for city_name in pop_df['name']:
 			if city_name.lower() in l:  # делим на массив, чтобы не искать во всей строке, иначе омск/томск путаются
