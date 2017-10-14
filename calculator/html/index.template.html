@@ -614,74 +614,78 @@
 	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css' rel='stylesheet' />
 </head>
 <body>
-	<div id='desktop-table' class='xs-hide'>
-		<div class='scroll-container'>
-			<div class='padding5'>
-				{% include 'heading.html' %}
-			</div>
-			<table class='sortable'>
-				<thead>
-					<tr title='Нажмите чтобы отсортировать по колонке'>
-						<td class='r'>№</td>
-						<td>город</td>
-						<td class='r xs-hide'>длина ВП<br> (км)</td>
-						<td class='r xs-hide'>жители<br> (тыс.)</td>
-						<td class='r'>ВП<br> (м/1000 чел.)</td>
-					</tr>
-				</thead>
-				<tbody>
-					{% for city in cities %}
-						<tr>
-							<td class='r'>{{ loop.index }}</td>
-							<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city under-dash' title='Нажмите чтобы увидеть на карте'>{{ city.short_name }}</a></td>
-							<td class='r xs-hide'>{{ (city.lanes_length/1000)|round(1) }}</td>
-							<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
-							<td class='r'>{{ city.lanes_per_1K|round(1) }}</td>
+	{% with platform='desktop' %}
+		<div id='desktop-table' class='xs-hide'>
+			<div class='scroll-container'>
+				<div class='padding5'>
+					{% include 'heading.html' %}
+				</div>
+				<table class='sortable'>
+					<thead>
+						<tr title='Нажмите чтобы отсортировать по колонке'>
+							<td class='r'>№</td>
+							<td>город</td>
+							<td class='r xs-hide'>длина ВП<br> (км)</td>
+							<td class='r xs-hide'>жители<br> (тыс.)</td>
+							<td class='r'>ВП<br> (м/1000 чел.)</td>
 						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-			<div class='padding15'>
-				{% include 'info.html' %}
+					</thead>
+					<tbody>
+						{% for city in cities %}
+							<tr>
+								<td class='r'>{{ loop.index }}</td>
+								<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city under-dash' title='Нажмите чтобы увидеть на карте'>{{ city.short_name }}</a></td>
+								<td class='r xs-hide'>{{ (city.lanes_length/1000)|round(1) }}</td>
+								<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
+								<td class='r'>{{ city.lanes_per_1K|round(1) }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<div class='padding15'>
+					{% include 'info.html' %}
+				</div>
 			</div>
 		</div>
-	</div>
+	{% endwith %}
 
 	<div id='map'></div>
 
-	<div id='mobile-table' class='xs-show'>
-		<div class='padding5'>
-			{% include 'heading.html' %}
-		</div>
-		<table id='table-header'>
-			<tr>
-				<td class='r font-x-large'>&equiv;</td>
-				<td>город</td>
-				<td class='r'>ВП (м/1000 чел.)</td>
-			</tr>
-		</table>
-		<div class='scroll-container'>
-			<table class='expand'>
-				{% for city in cities %}
-					<tr>
-						<td class='r'>{{ loop.index }}</td>
-						<td class='font-larger'><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]' class='js-go-to-city'>{{ city.short_name }}</a></td>
-						<td class='font-larger r'>{{ city.lanes_per_1K|round(1) }}</td>
-					</tr>
-					<tr class='xs-show'>
-						<td></td>
-						<td colspan='2' class='padding5-b font-smaller'>
-							{{ (city.lanes_length/1000)|round(1) }} км,
-							{{ (city.population/1000)|round(0)|int }} тыс.чел.
-						</td>
-					</tr>
-				{% endfor %}
-			</table>
+	{% with platform='mobile' %}
+		<div id='mobile-table' class='xs-show'>
 			<div class='padding5'>
-				{% include 'info.html' %}
+				{% include 'heading.html' %}
+			</div>
+			<table id='table-header'>
+				<tr>
+					<td class='r font-x-large'>&equiv;</td>
+					<td>город</td>
+					<td class='r'>ВП (м/1000 чел.)</td>
+				</tr>
+			</table>
+			<div class='scroll-container'>
+				<table class='expand'>
+					{% for city in cities %}
+						<tr>
+							<td class='r'>{{ loop.index }}</td>
+							<td class='font-larger'><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]' class='js-go-to-city'>{{ city.short_name }}</a></td>
+							<td class='font-larger r'>{{ city.lanes_per_1K|round(1) }}</td>
+						</tr>
+						<tr class='xs-show'>
+							<td></td>
+							<td colspan='2' class='padding5-b font-smaller'>
+								{{ (city.lanes_length/1000)|round(1) }} км,
+								{{ (city.population/1000)|round(0)|int }} тыс.чел.
+							</td>
+						</tr>
+					{% endfor %}
+				</table>
+				<div class='padding5'>
+					{% include 'info.html' %}
+				</div>
 			</div>
 		</div>
-	</div>
+	{% endwith %}
 
 	<script>
 	{# mapboxgl.accessToken = 'pk.eyJ1IjoiY3VsZWJyb24iLCJhIjoibUV6aHVrZyJ9.dCsAtXACyFtU1nKeM5zZUA'; #}
