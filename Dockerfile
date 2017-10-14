@@ -27,11 +27,12 @@ RUN ldconfig && pip3 install -U \
 	rtree \
 	shapely
 
-RUN mkdir /calculator
+RUN mkdir /calculator /aqtash
 COPY calculator /calculator
+COPY aqtash /aqtash
 
 RUN apt-get install -y locales
 RUN locale-gen en_US.UTF-8
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
-RUN echo "cd calculator && make all" > /make-rating.sh
+RUN echo "cd calculator && python3 main.py" > /make-rating.sh
