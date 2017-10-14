@@ -515,7 +515,7 @@
 		a:visited { color: hsl(296, 80%, 28%) }
 		a:hover, a:active { color: hsl(196, 80%, 58%); }
 
-		a.js-go-to-city, a.js-go-to-city:visited { color: #000; text-decoration: none; border-bottom: 1px dashed #aaa; }
+		a.under-dash, a.under-dash:visited { color: #000; text-decoration: none; border-bottom: 1px dashed #aaa; }
 		body {
 			margin:0; padding:0;
 			font-family: 'PT Sans', sans-serif; }
@@ -636,7 +636,7 @@
 					{% for city in cities %}
 						<tr>
 							<td class='r'>{{ loop.index }}</td>
-							<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city'>{{ city.short_name }}</a></td>
+							<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city under-dash'>{{ city.short_name }}</a></td>
 							<td class='r xs-hide'>{{ (city.lanes_length/1000)|round(1) }}</td>
 							<td class='r xs-hide'>{{ (city.population/1000)|round(0)|int }}</td>
 							<td class='r'>{{ city.lanes_per_1K|round(1) }}</td>
