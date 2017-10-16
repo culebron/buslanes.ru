@@ -1,19 +1,15 @@
 #!/usr/bin/python3
 
-import pandas as pd
-import numpy as np
-import geolib
-from shapely.geometry import Point
+from aqtash import autoargs, subset
 import geopandas as gpd
-from collections import defaultdict
 from argh import CommandError
 
 
 
 ALLOWED_OPERATIONS = {'sum', 'avg', 'min', 'first', 'last', 'count'}
 
-@geolib.autoargs
-def group(df1: gpd.GeoDataFrame, df2: gpd.GeoDataFrame, aggregations, outfile, subset=None):
+@autoargs
+def group(df1: gpd.GeoDataFrame, df2: gpd.GeoDataFrame, aggregations, outfile, subset_names=None):
 	"""
 	Aggregates columns of df2 that join df1.
 	"""
@@ -33,4 +29,4 @@ def group(df1: gpd.GeoDataFrame, df2: gpd.GeoDataFrame, aggregations, outfile, s
 
 	gr = matches.groupby(matches.index).agg(operations)
 	result_df = df1.join(gr)
-	return geolib.df_subset(result_df, subset)
+	return subset.do(result_df, subset_names)
