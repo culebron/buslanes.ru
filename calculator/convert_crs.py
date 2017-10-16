@@ -1,5 +1,4 @@
 import geopandas as gpd
-import argh
 import aqtash
 
 @aqtash.autoargs
