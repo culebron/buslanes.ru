@@ -522,12 +522,7 @@
 		.r { text-align: right; }
 		td.font-x-large { font-size: x-large; }
 		#mobile-table { display: none; }
-		/* #desktop-table { display: block; } */
-		/*
-		Max width before this PARTICULAR table gets nasty
-		This query will take effect for any screen smaller than 760px
-		and also iPads specifically.
-		*/
+
 		.xs-show { display: none; }
 		.padding5-b { padding-bottom: .5em; }
 		.padding5 { padding: .5em; }
@@ -541,7 +536,6 @@
 			padding: .3em;
 		}
 
-		/* td { border: 1px solid black; } */
 		@media only screen and (max-width: 760px),
 		(min-device-width: 768px) and (max-device-width: 1024px)  {
 			#map { position:fixed; top:0; bottom: 20%; left: 0; right: 0; }
@@ -710,7 +704,7 @@
 				'line-join': 'round'
 			},
 			paint: {
-				'line-color': 'hsl(188, 93%, 22%)',
+				'line-color': 'hsla(188, 93%, 22%, .75)',
 				'line-width': 6
 			}
 		}, 'waterway-label');

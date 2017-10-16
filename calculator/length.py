@@ -1,12 +1,10 @@
 import geopandas as gpd
-import geolib
+from math import radians, cos
+from aqtash import autoargs, WGS
 
-@geolib.autoargs
-def length(df: gpd.GeoDataFrame, outfile, fieldname='length'):
+@autoargs
+def do(df: gpd.GeoDataFrame, outfile, fieldname='length'):
 	length = df['geometry'].length
-
-	df4326 = df.to_crs(geolib.CRS4326)
-	coslats = df4326['geometry'].apply(geolib.coslat)
-
+	coslats = df.geometry.to_crs(WGS).apply(lambda p: p.centroid.y).apply(radians).apply(cos)
 	df[fieldname] = length * coslats * df['lanes']
 	return df

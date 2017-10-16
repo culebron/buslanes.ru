@@ -1,10 +1,10 @@
 
-import geolib
+from aqtash import autoargs, WGS
 import geopandas as gpd
 from fastkml import kml
 
-@geolib.autoargs
-def main(kmlfile, outfile):
+@autoargs
+def do(kmlfile, outfile):
 	k = kml.KML()
 	# open & encoding - для декодирования файлов при открытии, потому что в системе по умолчанию может стоять кодировка ascii
 	with open(kmlfile, encoding='utf-8') as f:
@@ -14,14 +14,13 @@ def main(kmlfile, outfile):
 	data = []
 	for f in list(k.features())[0].features():
 		lanes = None
-		if f.name == 'односторонние сущ.':
+		if f.name == 'односторонние сущ.' or f.name == 'Существующие. Односторонние':
 			lanes = 1
-		elif f.name == 'двусторонние сущ.':
+		elif f.name == 'двусторонние сущ.' or f.name == 'Существующие':
 			lanes = 2
-
 		if lanes:
 			for f2 in f.features():
 				data.append({'lanes': lanes, 'geometry': f2.geometry})
 
-	return gpd.GeoDataFrame(data)
+	return gpd.GeoDataFrame(data, crs=WGS)
 
