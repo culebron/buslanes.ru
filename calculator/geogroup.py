@@ -9,7 +9,7 @@ from argh import CommandError
 ALLOWED_OPERATIONS = {'sum', 'avg', 'min', 'first', 'last', 'count'}
 
 @autoargs
-def group(df1: gpd.GeoDataFrame, df2: gpd.GeoDataFrame, aggregations, outfile, subset_names=None):
+def group(df1: gpd.GeoDataFrame, df2: gpd.GeoDataFrame, aggregations, subset_names=None):
 	"""
 	Aggregates columns of df2 that join df1.
 	"""

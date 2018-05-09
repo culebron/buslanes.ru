@@ -4,7 +4,7 @@ import geopandas as gpd
 from fastkml import kml
 
 @autoargs
-def do(kmlfile, outfile):
+def do(kmlfile):
 	k = kml.KML()
 	# open & encoding - для декодирования файлов при открытии, потому что в системе по умолчанию может стоять кодировка ascii
 	with open(kmlfile, encoding='utf-8') as f:

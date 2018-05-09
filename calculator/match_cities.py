@@ -5,7 +5,7 @@ import geopandas as gpd
 import pandas as pd
 
 @aqtash.autoargs
-def do(muni_df: gpd.GeoDataFrame, pop_df: pd.DataFrame, outfile):
+def do(muni_df: gpd.GeoDataFrame, pop_df: pd.DataFrame):
 	muni_df = muni_df[~muni_df['name'].str.contains('район').fillna(False)]
 	def _m(n):
 		if n is None:

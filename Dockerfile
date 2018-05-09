@@ -1,19 +1,23 @@
-FROM ubuntu:17.04
+FROM ubuntu:18.04
 MAINTAINER Dmitri Lebedev <dl@peshemove.org>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update \
-	&& apt-get install -y --force-yes --no-install-recommends \
+RUN apt update \
+	&& apt install -y --no-install-recommends \
+	build-essential \
 	libspatialindex-dev \
 	libgdal-dev \
 	libgeos-dev \
+	locales \
 	python3-pip \
 	python3-dev \
+	python3.6-dev \
 	python3-setuptools \
 	unzip \
 	wget
 
+RUN pip3 install wheel
 
 RUN ldconfig && pip3 install -U \
 	argh \
@@ -24,15 +28,22 @@ RUN ldconfig && pip3 install -U \
 	Jinja2 \
 	lxml \
 	polyline \
+	psycopg2 \
+	pyproj \
+	requests_cache \
 	rtree \
 	shapely
 
+RUN ldconfig && pip3 install -U \
+	ipdb
+
 RUN mkdir /calculator /aqtash
 COPY calculator /calculator
-COPY aqtash /aqtash
 
-RUN apt-get install -y locales
 RUN locale-gen en_US.UTF-8
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 RUN echo "cd calculator && python3 main.py" > /make-rating.sh
+
+COPY aqtash /aqtash
+RUN cd aqtash && python3 setup.py install

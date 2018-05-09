@@ -8,7 +8,7 @@ import geopandas as gpd
 ALLOWED_OPERATIONS = {'sum', 'avg', 'min', 'first', 'last', 'count'}
 
 @autoargs
-def do(in_df: gpd.GeoDataFrame, groupby, aggregations, outfile):
+def do(in_df: gpd.GeoDataFrame, groupby, aggregations):
 	"""
 	Aggregates columns of df2 that join df1.
 	"""

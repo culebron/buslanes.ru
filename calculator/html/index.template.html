@@ -728,7 +728,7 @@
 	Array.prototype.forEach.call(elts, function(e) {
 		var extent = JSON.parse(e.getAttribute('data-extent'));
 		e.addEventListener('click', function() {
-			map.fitBounds(extent, {padding: 20});
+			map.fitBounds(extent, {padding: 20, duration: 10000});
 			return false;
 		});
 	});
