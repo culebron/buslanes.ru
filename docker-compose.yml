@@ -8,7 +8,7 @@ services:
 
     network_mode: bridge
     volumes:
-      - ./calculator:/calculator
+      - ./calc:/calc
       - ./tmp:/tmp
 
     # command: sh /make-rating.sh
