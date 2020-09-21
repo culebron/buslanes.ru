@@ -44,6 +44,7 @@ RUN locale-gen en_US.UTF-8
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 RUN echo "cd calculator && python3 main.py" > /make-rating.sh
+RUN echo "cd calculator && python3.6 render.py html/index.template.html build/bus-lanes.geojson build/bus-lanes.csv build/index.html" > /render.sh
 
 COPY aqtash /aqtash
 RUN cd aqtash && python3 setup.py install

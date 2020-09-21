@@ -1,45 +1,110 @@
-from aqtash import autoargs_nowrite, memoize, sh, WatchedFile, GOOGLE, WGS, intersect, write_file, read_file
+from fastkml import kml
+from render import render
 from shapely.geometry import LineString
-import dissolve
-import length
-import match_cities
+import argh
+import geopandas as gpd
 import os
 import pandas as pd
-import parsekml
-import stats
-import strip_geometry
+import pyproj
 
-@memoize
-def group_data(map_id, borders_file):
-	print('executing group_data')
-	lanes_map_file = '/tmp/{}.kml'.format(map_id)
+
+OUTPUT_PATH = 'build/index.html'
+STATS_PATH = 'build/bus-lanes.csv'
+MUNICIPALITIES_PATH = 'src/muni.geojson'
+POPULATION_PATH = 'src/city-population.csv'
+TEMPLATE_PATH = 'html/index.template.html'
+
+
+WGS = CRS4326 = 'epsg:4326'
+SIB = pyproj.CRS.from_proj4('+proj=aea +lat_1=52 +lat_2=64 +lat_0=0 +lon_0=105 +x_0=18500000 +y_0=0 +ellps=krass +units=m +towgs84=28,-130,-95,0,0,0,0 +no_defs')
+
+
+def download_kml(map_id, file_name):
+	lanes_map_file = f'/tmp/{file_name}.kml'
 	if not os.path.exists(lanes_map_file):
-		sh('wget "https://www.google.com/maps/d/kml?mid={}&forcekml=1" -O '.format(map_id), lanes_map_file)
-	lanes = parsekml.do(lanes_map_file).to_crs(GOOGLE)
-	lengths = length.do(lanes, 'lanes_length').to_crs(WGS)
+		print(f'downloading map http://www.google.com/maps/d/kml?mid={map_id}&forcekml=1')
+		os.system(f'wget "http://www.google.com/maps/d/kml?mid={map_id}&forcekml=1" -O "{lanes_map_file}"')
 
-	matched_cities = match_cities.do(borders_file, read_file('src/city-population.csv'))
+	k = kml.KML()
+	# open & encoding - для декодирования файлов при открытии, потому что в системе по умолчанию может стоять кодировка ascii
+	with open(lanes_map_file, encoding='utf-8') as f:
+		# а плагин сам ещё раскодирует utf-8, поэтому закодировать обратно
+		k.from_string(f.read().encode('utf-8'))
 
-	return intersect.do(lengths, matched_cities)
+	data = []
+	for f in list(k.features())[0].features():
+		lanes = None
+		if f.name == 'односторонние сущ.' or f.name == 'Существующие. Односторонние':
+			lanes = 1
+		elif f.name == 'двусторонние сущ.' or f.name == 'Существующие':
+			lanes = 2
+		if lanes:
+			for f2 in f.features():
+				data.append({'lanes': lanes, 'geometry': f2.geometry})
 
-@autoargs_nowrite
-def render_page(outfile='build/index.html'):
-	print('executing main')
-	russia = group_data('1PWvRWfdKEV4SVs5ONkDgRPLbRiQ', read_file('src/muni.geojson'))
-	moscow = group_data('1GO7k2n2_8FgvzaaZCKtRhVCPr5s', read_file('src/mow.geojson'))
-	displayed_lanes = pd.concat([russia, moscow])
-	print(displayed_lanes['geometry'].values[0], displayed_lanes['geometry'].values[0].__class__)
+	gdf = gpd.GeoDataFrame(data, crs=WGS)
+	gdf['length'] = gdf['geometry'].to_crs(SIB).length  # в проекции альберса сибирь метры -- это реальные метры, в пределах бСССР, вне этого прямоугольника координат начинаются сильные нелинейные искажения.
+	return gdf
+
+
+def short_name(n, pop_df):
+	if n is None:
+		return
+
+	l = n.lower().split()
+	if not l or len(l) == 0:
+		return
+
+	for city_name in pop_df['name']:
+		if city_name.lower() in l:  # делим на массив, чтобы не искать во всей строке, иначе омск/томск путаются
+			return city_name
+		if city_name.endswith('ь') and any(city_name[:-1].lower() in i for i in l):
+			return city_name
+		if ' ' in city_name and city_name.lower() in n.lower():  # если в имени из справочника населения есть пробел (набережные челны), тогда надо сравнить всю строку
+			return city_name
+
+
+def find_population(n, pop_df):
+	matching = pop_df[pop_df['name'] == n]
+	if not matching.empty:
+		return matching['population'].values[0]
+
+
+@argh.dispatch_command
+def kml2gdf():
+	print('reading russia file')
+	russia_gdf = download_kml('1PWvRWfdKEV4SVs5ONkDgRPLbRiQ', 'ВП в СНГ')
+	population_df = pd.read_csv(POPULATION_PATH)
+
+	municipalities = gpd.read_file(MUNICIPALITIES_PATH)
+	municipalities['short_name'] = municipalities['name'].apply(short_name, args=(population_df,))
+	municipalities['population'] = municipalities['short_name'].apply(find_population, args=(population_df,))
+
+	russia = gpd.sjoin(russia_gdf, municipalities)
+
+	print('reading moscow file')
+	moscow = download_kml('1GO7k2n2_8FgvzaaZCKtRhVCPr5s', 'ВП в Москве')
+
+	# выбираю ту строку из муниципалитетов, где написана москва и джойню
+	print('calculating stats')
+	moscow['_merge_'] = 1
+	moscow_data = population_df[population_df['name'] == 'Москва'].copy()
+	moscow_data['short_name'] = 'Москва'
+	moscow_data['_merge_'] = 1
+	moscow = moscow.merge(moscow_data, on='_merge_').drop('_merge_', axis=1)
+
+	displayed_lanes = pd.concat([russia, moscow], sort=True).rename(columns={'length': 'lanes_length'})
 	displayed_lanes = displayed_lanes[displayed_lanes['geometry'].apply(lambda g: len(g.coords) > 1)].copy()
 	displayed_lanes['geometry'] = displayed_lanes['geometry'].apply(lambda g: LineString([xy[:2] for xy in list(g.coords)]))
 
 	result_geojson = 'build/bus-lanes.geojson'
+	displayed_lanes.to_file(result_geojson, driver='GeoJSON')
 
-	write_file(displayed_lanes, result_geojson)
+	stat_table = displayed_lanes.dissolve(by='short_name', aggfunc={'lanes_length': 'sum', 'population': 'first'}).reset_index()
+	stat_table['lanes_per_1K'] = stat_table.lanes_length / stat_table.population * 1000
+	stat_table.sort_values('lanes_per_1K', ascending=False, inplace=True)
+	stat_table = stat_table.join(stat_table.bounds).drop('geometry', axis=1)
 
-	stat_table = dissolve.do(displayed_lanes, 'short_name', 'sum:lanes_length;first:population').reset_index()
-	stat_table = strip_geometry.do(stats.do(stat_table))
-	result_csv = 'build/bus-lanes.csv'
+	stat_table.to_csv(STATS_PATH)
 
-	write_file(stat_table, result_csv)
-
-	sh('python3.6 render.py ', WatchedFile('html/index.template.html'), ' ', result_geojson, ' ', result_csv, ' ', outfile)
+	render(TEMPLATE_PATH, displayed_lanes, stat_table, OUTPUT_PATH)

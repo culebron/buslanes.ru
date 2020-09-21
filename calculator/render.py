@@ -1,19 +1,16 @@
-from aqtash import autoargs_nowrite
-import geopandas as gpd
-import pandas as pd
+import argh
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-env = Environment(
-	loader=FileSystemLoader('./html'),
-	autoescape=select_autoescape(['html', 'xml'])
-)
 
-@autoargs_nowrite
-def do(html_template, df: gpd.GeoDataFrame, stats_df: pd.DataFrame, html_target):
-	tpl = env.get_template(html_template.replace('html/', ''))
 
-	print(df)
+@argh.dispatch_command
+def render(template_path, displayed_lanes, stat_table, output_path):
+	env = Environment(
+		loader=FileSystemLoader('./html'),
+		autoescape=select_autoescape(['html', 'xml'])
+	)
 
-	rendered = tpl.render(cities_json=df.to_json(), cities=stats_df.to_dict(orient='records'))
-	with open(html_target, 'w', encoding='utf-8') as f:
+	tpl = env.get_template(template_path.replace('html/', ''))
+	print('rendering')
+	rendered = tpl.render(cities_json=displayed_lanes.to_json(), cities=stat_table.to_dict(orient='records'))
+	with open(output_path, 'w', encoding='utf-8') as f:
 		f.write(rendered)
-

@@ -1,12 +1,15 @@
 version: '3'
 
 services:
-  lanes-calculator:
+  calc:
     build:
       context: .
       dockerfile: Dockerfile
 
+    network_mode: bridge
     volumes:
       - ./calculator:/calculator
+      - ./tmp:/tmp
 
-    command: sh /make-rating.sh
+    # command: sh /make-rating.sh
+    entrypoint: tail -f /dev/null
