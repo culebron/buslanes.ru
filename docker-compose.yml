@@ -1,4 +1,4 @@
-version: '3'
+version: '3.6'
 
 services:
   calc:
@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    network_mode: bridge
+
+    network_mode: host
     volumes:
       - ./calc:/calc
       - ./tmp:/tmp

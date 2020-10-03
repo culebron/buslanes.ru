@@ -93,7 +93,8 @@ def kml2gdf():
 	moscow_data['_merge_'] = 1
 	moscow = moscow.merge(moscow_data, on='_merge_').drop('_merge_', axis=1)
 
-	displayed_lanes = pd.concat([russia, moscow], sort=True).rename(columns={'length': 'lanes_length'})
+	displayed_lanes = pd.concat([russia, moscow], sort=True)
+	displayed_lanes['lanes_length'] = displayed_lanes['length'] * displayed_lanes['lanes']
 	displayed_lanes = displayed_lanes[displayed_lanes['geometry'].apply(lambda g: len(g.coords) > 1)].copy()
 	displayed_lanes['geometry'] = displayed_lanes['geometry'].apply(lambda g: LineString([xy[:2] for xy in list(g.coords)]))
 

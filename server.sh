@@ -1,1 +1,1 @@
-cd calculator/build && python -m SimpleHTTPServer 8000
+cd calc/build && python2 -m SimpleHTTPServer 8000
