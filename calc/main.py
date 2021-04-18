@@ -16,7 +16,7 @@ TEMPLATE_PATH = 'html/index.template.html'
 
 
 WGS = CRS4326 = 'epsg:4326'
-SIB = pyproj.CRS.from_proj4('+proj=aea +lat_1=52 +lat_2=64 +lat_0=0 +lon_0=105 +x_0=18500000 +y_0=0 +ellps=krass +units=m +towgs84=28,-130,-95,0,0,0,0 +no_defs')
+SIB = pyproj.crs.ProjectedCRS(pyproj.crs.coordinate_operation.AlbersEqualAreaConversion(52, 64, 0, 105, 18500000, 0), name='Albers Siberia')
 
 
 def download_kml(map_id, file_name):
@@ -73,6 +73,7 @@ def find_population(n, pop_df):
 @argh.dispatch_command
 def kml2gdf():
 	print('reading russia file')
+	# https://www.google.com/maps/d/u/0/viewer?hl=en&mid=1PWvRWfdKEV4SVs5ONkDgRPLbRiQ
 	russia_gdf = download_kml('1PWvRWfdKEV4SVs5ONkDgRPLbRiQ', 'ВП в СНГ')
 	population_df = pd.read_csv(POPULATION_PATH)
 
@@ -83,6 +84,7 @@ def kml2gdf():
 	russia = gpd.sjoin(russia_gdf, municipalities)
 
 	print('reading moscow file')
+	# https://www.google.com/maps/d/u/0/viewer?hl=en&mid=1GO7k2n2_8FgvzaaZCKtRhVCPr5s
 	moscow = download_kml('1GO7k2n2_8FgvzaaZCKtRhVCPr5s', 'ВП в Москве')
 
 	# выбираю ту строку из муниципалитетов, где написана москва и джойню

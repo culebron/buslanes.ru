@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER Dmitri Lebedev <dl@peshemove.org>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -29,10 +29,10 @@ RUN ldconfig && pip3 install -U \
 	lxml \
 	polyline \
 	psycopg2 \
-	pyproj \
 	requests_cache \
 	rtree \
 	shapely
+
 
 RUN ldconfig && pip3 install -U \
 	ipdb

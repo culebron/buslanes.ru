@@ -12,5 +12,5 @@ services:
       - ./calc:/calc
       - ./tmp:/tmp
 
-    # command: sh /make-rating.sh
-    entrypoint: tail -f /dev/null
+    #entrypoint: tail -f /dev/null
+    entrypoint: sh /make-rating.sh

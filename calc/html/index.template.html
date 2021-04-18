@@ -573,6 +573,9 @@
 				background: #fff;
 			}
 			table tr:nth-child(4n), table tr:nth-child(4n-1) { background: #eee; }
+			table tr.gold { background: #ffe688; }
+			table tr:nth-child(4n).gold, table tr:nth-child(4n-1).gold { background: #ffd844; }
+
 			#mobile-table td:last-child {
 				padding-right: 1em;
 			}
@@ -602,7 +605,9 @@
 			#desktop-table td:last-child { padding-right: .7em; }
 			#desktop-table td:first-child { padding-left: .7em; }
 			#desktop-table table thead { background: #ddd; }
+			table tr.gold { background: #ffe688; }
 			table tr:nth-child(even) { background: #eee; }
+			table tr:nth-child(even).gold { background: #ffd844; }
 		}
 
 		#mobile-table::-webkit-scrollbar, #desktop-table::-webkit-scrollbar { width: 8px; background-color: rgba(255,255,255,0); }
@@ -643,7 +648,7 @@
 					</thead>
 					<tbody>
 						{% for city in cities %}
-							<tr>
+							<tr {% if loop.index < 6 %}class='gold'{% endif %}>
 								<td class='r'>{{ loop.index }}</td>
 								<td><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]'  class='js-go-to-city under-dash' title='Нажмите чтобы увидеть на карте'>{{ city.short_name }}</a></td>
 								<td class='r xs-hide'>{{ (city.lanes_length/1000)|round(1) }}</td>
@@ -677,12 +682,12 @@
 			<div class='scroll-container'>
 				<table class='expand'>
 					{% for city in cities %}
-						<tr>
+						<tr {% if loop.index < 6 %}class='gold'{% endif %}>
 							<td class='r'>{{ loop.index }}</td>
 							<td class='font-larger'><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]' class='js-go-to-city'>{{ city.short_name }}</a></td>
 							<td class='font-larger r'>{{ city.lanes_per_1K|round(1) }}</td>
 						</tr>
-						<tr class='xs-show'>
+						<tr class='xs-show  {% if loop.index < 6 %}gold{% endif %}'>
 							<td></td>
 							<td colspan='2' class='padding5-b font-smaller'>
 								{{ (city.lanes_length/1000)|round(1) }} км,
