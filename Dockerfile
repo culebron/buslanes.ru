@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM python:3.8
 MAINTAINER Dmitri Lebedev <dl@peshemove.org>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -12,33 +12,18 @@ RUN cat /etc/resolv.conf && apt update \
 	locales \
 	python3-pip \
 	python3-dev \
-	python3.8-dev \
 	python3-setuptools \
 	unzip \
 	wget
 
 RUN pip3 install wheel
+COPY requirements.txt /tmp/requirements.txt
+RUN ldconfig && pip3 install -U -r /tmp/requirements.txt
+RUN ldconfig && pip3 install -U ipdb
 
-RUN ldconfig && pip3 install -U \
-	argh \
-	decorator \
-	fastkml \
-	geojson \
-	geopandas \
-	Jinja2 \
-	lxml \
-	polyline \
-	psycopg2 \
-	requests_cache \
-	rtree \
-	shapely
-
-
-RUN ldconfig && pip3 install -U \
-	ipdb
-
-RUN mkdir /calc /aqtash
-COPY calc /calc
+RUN mkdir /calc
+# сейчас эта папка просто мапится в контейнер через volumes в docker-compose.yml
+# COPY calc /calc
 
 RUN locale-gen en_US.UTF-8
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'

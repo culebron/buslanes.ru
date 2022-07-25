@@ -56,11 +56,16 @@ def short_name(n, pop_df):
 		return
 
 	for city_name in pop_df['name']:
-		if city_name.lower() in l:  # делим на массив, чтобы не искать во всей строке, иначе омск/томск путаются
+		cnl = city_name.lower()
+		if cnl in l:  # делим на массив, чтобы не искать во всей строке, иначе омск/томск путаются
 			return city_name
-		if city_name.endswith('ь') and any(city_name[:-1].lower() in i for i in l):
-			return city_name
-		if ' ' in city_name and city_name.lower() in n.lower():  # если в имени из справочника населения есть пробел (набережные челны), тогда надо сравнить всю строку
+		if cnl.endswith('ь'):
+			words = set(l) - {'образование', 'округ', 'поселение', 'городской', 'муниципальное', 'муниципальный'}
+			for w in words:
+				if w.startswith(cnl[:-1]) and w in (cnl[:-1] + 'ский', cnl + 'ский'):
+					print(n, 'matches', city_name)
+					return city_name
+		if ' ' in city_name and cnl in n.lower():  # если в имени из справочника населения есть пробел (набережные челны), тогда надо сравнить всю строку
 			return city_name
 
 
