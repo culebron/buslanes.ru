@@ -1,0 +1,10 @@
+Jinja2==3.0.3
+Rtree==0.9.7
+Shapely==1.8.1.post1
+argh==0.26.2
+decorator==5.1.1
+fastkml==0.12
+geojson==2.5.0
+geopandas==0.10.2
+lxml==4.8.0
+polyline==1.4.0
