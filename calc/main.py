@@ -13,6 +13,7 @@ STATS_PATH = 'build/bus-lanes.csv'
 MUNICIPALITIES_PATH = 'src/muni.geojson'
 POPULATION_PATH = 'src/city-population.csv'
 TEMPLATE_PATH = 'html/index.template.html'
+RESULT_GEOJSON = 'build/bus-lanes.geojson'
 
 
 WGS = CRS4326 = 'epsg:4326'
@@ -105,8 +106,7 @@ def kml2gdf():
 	displayed_lanes = displayed_lanes[displayed_lanes['geometry'].apply(lambda g: len(g.coords) > 1)].copy()
 	displayed_lanes['geometry'] = displayed_lanes['geometry'].apply(lambda g: LineString([xy[:2] for xy in list(g.coords)]))
 
-	result_geojson = 'build/bus-lanes.geojson'
-	displayed_lanes.to_file(result_geojson, driver='GeoJSON')
+	displayed_lanes.to_file(RESULT_GEOJSON, driver='GeoJSON')
 
 	stat_table = displayed_lanes.dissolve(by='short_name', aggfunc={'lanes_length': 'sum', 'population': 'first'}).reset_index()
 	stat_table['lanes_per_1K'] = stat_table.lanes_length / stat_table.population * 1000
