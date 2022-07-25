@@ -8,3 +8,4 @@ dist
 __pycache_
 data
 .hg
+deploy.sh
