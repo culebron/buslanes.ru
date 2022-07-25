@@ -6,5 +6,5 @@ decorator==5.1.1
 fastkml==0.12
 geojson==2.5.0
 geopandas==0.10.2
-lxml==4.8.0
+lxml==4.9.1
 polyline==1.4.0
