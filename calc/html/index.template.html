@@ -575,13 +575,13 @@
 				background: #fff;
 			}
 			table tr:nth-child(4n), table tr:nth-child(4n-1) { background: #eee; }
-			table tr.gold { background: #ffe688; }
-			table tr:nth-child(4n).gold, table tr:nth-child(4n-1).gold { background: #ffd844; }
-
 			#mobile-table td:last-child {
 				padding-right: 1em;
 			}
 			.scroll-container { box-shadow: inset 0px 12px 6px -10px rgba(0,0,0,.3); }
+			table tr.gold { background: #ffe688; }
+			table tr:nth-child(4n).gold, table tr:nth-child(4n-1).gold { background: #ffd844; }
+			
 		}
 
 		@media screen and (min-device-width: 1025px) {
@@ -708,6 +708,7 @@
 			<div class='padding5-0-b'>
 				{% include 'heading.html' %}
 			</div>
+
 			<table id='table-header'>
 				<tr>
 					<td class='r font-x-large'>&equiv;</td>
@@ -719,40 +720,40 @@
 			<div class='scroll-container'>
 				{# большие города #}
 				{% with cities=big_cities %}			
-					<table class='expand'>
-					{% for city in cities %}
-						<tr {% if loop.index < 6 %}class='gold'{% endif %}>
-							<td class='r'>{{ loop.index }}</td>
-							<td class='font-larger'><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]' class='js-go-to-city'>{{ city.short_name }}</a></td>
-							<td class='font-larger r'>{{ city.lanes_per_1K|round(1) }}</td>
-						</tr>
-						<tr class='xs-show  {% if loop.index < 6 %}gold{% endif %}'>
-							<td></td>
-							<td colspan='2' class='padding5-b font-smaller'>
-								{{ (city.lanes_length/1000)|round(1) }} км,
-								{{ (city.population/1000)|round(0)|int }} тыс.чел.
-							</td>
-						</tr>
-					{% endfor %}
+					<table class='expand js-table {{ extra_class }}'>
+						{% for city in cities %}
+							<tr {% if loop.index < 6 %}class='gold'{% endif %}>
+								<td class='r'>{{ loop.index }}</td>
+								<td class='font-larger'><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]' class='js-go-to-city'>{{ city.short_name }}</a></td>
+								<td class='font-larger r'>{{ city.lanes_per_1K|round(1) }}</td>
+							</tr>
+							<tr class='xs-show  {% if loop.index < 6 %}gold{% endif %}'>
+								<td></td>
+								<td colspan='2' class='padding5-b font-smaller'>
+									{{ (city.lanes_length/1000)|round(1) }} км,
+									{{ (city.population/1000)|round(0)|int }} тыс.чел.
+								</td>
+							</tr>
+						{% endfor %}
 					</table>
 				{% endwith %}
 				{# малые города #}
 				{% with extra_class='hidden', cities=small_cities %}
-					<table class='expand'>
-					{% for city in cities %}
-						<tr {% if loop.index < 6 %}class='gold'{% endif %}>
-							<td class='r'>{{ loop.index }}</td>
-							<td class='font-larger'><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]' class='js-go-to-city'>{{ city.short_name }}</a></td>
-							<td class='font-larger r'>{{ city.lanes_per_1K|round(1) }}</td>
-						</tr>
-						<tr class='xs-show  {% if loop.index < 6 %}gold{% endif %}'>
-							<td></td>
-							<td colspan='2' class='padding5-b font-smaller'>
-								{{ (city.lanes_length/1000)|round(1) }} км,
-								{{ (city.population/1000)|round(0)|int }} тыс.чел.
-							</td>
-						</tr>
-					{% endfor %}
+					<table class='expand js-table {{ extra_class }}'>
+						{% for city in cities %}
+							<tr {% if loop.index < 6 %}class='gold'{% endif %}>
+								<td class='r'>{{ loop.index }}</td>
+								<td class='font-larger'><a href='#' data-extent='[[{{ city.minx }}, {{city.miny}}], [{{ city.maxx }}, {{ city.maxy }}]]' class='js-go-to-city'>{{ city.short_name }}</a></td>
+								<td class='font-larger r'>{{ city.lanes_per_1K|round(1) }}</td>
+							</tr>
+							<tr class='xs-show  {% if loop.index < 6 %}gold{% endif %}'>
+								<td></td>
+								<td colspan='2' class='padding5-b font-smaller'>
+									{{ (city.lanes_length/1000)|round(1) }} км,
+									{{ (city.population/1000)|round(0)|int }} тыс.чел.
+								</td>
+							</tr>
+						{% endfor %}
 					</table>
 				{% endwith %}												
 				<div class='padding5'>
