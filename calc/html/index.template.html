@@ -527,8 +527,8 @@
 
 		.xs-show { display: none; }
 		.padding5-b { padding-bottom: .5em; }
-		.padding5-0-b { padding: .5em .5em 0; }
 		.padding5 { padding: .5em; }
+		.paddding0-b { padding-bottom: 0 }
 		.padding15 { padding: 1.5em; }
 		.expand { width: 100%; box-sizing: margin; }
 
@@ -641,7 +641,7 @@
 	{% with platform='desktop' %}
 		<div id='desktop-table' class='xs-hide'>
 			<div class='scroll-container'>
-				<div class='padding5-0-b'>
+				<div class='padding5 padding0-b'>
 					{% include 'heading.html' %}
 				</div>
 				{# большие города #}
@@ -705,7 +705,7 @@
 
 	{% with platform='mobile' %}
 		<div id='mobile-table' class='xs-show'>
-			<div class='padding5-0-b'>
+			<div class='padding5 padding0-b'>
 				{% include 'heading.html' %}
 			</div>
 
